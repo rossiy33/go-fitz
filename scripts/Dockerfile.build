@@ -1,0 +1,17 @@
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential g++ \
+    gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
+    curl ca-certificates xz-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /work
+
+# Download mupdf source
+RUN curl -fSL "https://mupdf.com/downloads/archive/mupdf-1.26.11-source.tar.gz" -o mupdf-1.26.11-source.tar.gz
+
+COPY build-mupdf.sh /work/build-mupdf.sh
+RUN chmod +x /work/build-mupdf.sh
+
+RUN SRC_TGZ=/work/mupdf-1.26.11-source.tar.gz DEST=/work/out /work/build-mupdf.sh
